@@ -16,12 +16,14 @@
 #define MATRIX_TYPE HORIZONTAL_MATRIX
 #define NUM_LEDS MATRIX_WIDTH *MATRIX_HEIGHT
 
-int brightness = 255;
+int brightness = 0;
 int lastBrightness = 0;
-int currentProgram = 1;
+int homeAssitantBrightness;
 int testCount = 0;
-boolean lightsOn = true;
+boolean lightsOn = false;
 int currentState;
+int lastState;
+String animationName;
 
 cLEDMatrix<MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_TYPE> leds;
 
@@ -58,7 +60,7 @@ void setup() {
     FastLED.addLeds<WS2812B, PIN, RGB>(matrixleds, NUMMATRIX);
     matrix->begin();
     matrix->setTextWrap(false);
-    matrix->setBrightness(brightness);
+    matrix->setBrightness(255);
     matrix->setTextColor(colors[0]);
 
     xTaskCreatePinnedToCore(
@@ -80,13 +82,16 @@ void loop() {
 
 void ledStateMachine() {
     switch (currentState) {
-        case 0:  //solid white
+        case 0:  //off
+            EVERY_N_MILLISECONDS(20) {
+               FastLED.clear(true);
+            }
+            break;
+        case 1:  //Rainbow
             testAnimation();
             break;
-        case 1:  //Fireworks
+        case 2:  //Fireworks
             showFireworks();
-            break;
-        case 2:  //Test Pattern
             break;
         case 3:
             break;
@@ -95,24 +100,24 @@ void ledStateMachine() {
 
 void setAnimation(String payload) {
     if (payload == "Rainbow Effects") {
-        currentState = 0;
-    }
-    if (payload == "Fireworks") {
         currentState = 1;
     }
-    if (payload == "Random Blinks") {
+    if (payload == "Fireworks") {
         currentState = 2;
     }
-    if (payload == "Spectrum") {
+    if (payload == "Random Blinks") {
         currentState = 3;
     }
-    if (payload == "Scrolling Spectrum") {
+    if (payload == "Spectrum") {
         currentState = 4;
     }
-    if (payload == "Custom Text") {
+    if (payload == "Scrolling Spectrum") {
         currentState = 5;
     }
-    if (payload == "Random") {
+    if (payload == "Custom Text") {
         currentState = 6;
+    }
+    if (payload == "Random") {
+        currentState = 7;
     }
 }

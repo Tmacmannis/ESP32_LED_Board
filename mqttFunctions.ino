@@ -6,6 +6,24 @@ void Task1code(void* pvParameters) {
         delay(28);
         client.loop();  // takes 60 micro seconds to complete, fast...
         unsigned long currentMillis = millis();
+        EVERY_N_MILLISECONDS(1000) {
+            TelnetStream.print("lightsOn: ");
+            TelnetStream.print(lightsOn);
+            TelnetStream.print(" brightness: ");
+            TelnetStream.print(brightness);
+            TelnetStream.print(" current state: ");
+            TelnetStream.println(currentState);
+        }
+
+        EVERY_N_MILLISECONDS(500) {
+            if (lightsOn) {
+                client.publish("ledboard/OnOffState", "ON");
+            } else {
+                client.publish("ledboard/OnOffState", "OFF");
+            }
+            client.publish("ledboard/brightnessState", String(homeAssitantBrightness));
+            client.publish("ledboard/effectState", animationName);
+        }
     }
 }
 
@@ -13,6 +31,7 @@ void onConnectionEstablished() {
     client.subscribe("ledboard/brightness", [](const String& payload) {
         TelnetStream.print("brightness payload is: ");
         TelnetStream.println(payload);
+        homeAssitantBrightness = payload.toInt();
         brightness = map(payload.toInt(), 3, 255, 0, 255);
     });
 
@@ -24,11 +43,14 @@ void onConnectionEstablished() {
                 lastBrightness = brightness;
                 brightness = 0;
                 lightsOn = false;
+                lastState = currentState;
+                currentState = 0;
             }
         } else {
             if (!lightsOn) {
                 lightsOn = true;
                 brightness = lastBrightness;
+                currentState = lastState;
             }
         }
     });
@@ -36,6 +58,7 @@ void onConnectionEstablished() {
     client.subscribe("ledboard/effects", [](const String& payload) {
         TelnetStream.print("Effect payload is: ");
         TelnetStream.println(payload);
-        setAnimation(payload);
+        animationName = payload;
+        setAnimation(animationName);
     });
 }
