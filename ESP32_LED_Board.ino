@@ -27,8 +27,8 @@ String animationName;
 int snakeSpeed = 100;
 int rainSpeed = 100;
 
-int snakeSpeedOrig;
-int rainSpeedOrig;
+int snakeSpeedOrig = 50;
+int rainSpeedOrig = 50;
 
 cLEDMatrix<MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_TYPE> leds;
 
@@ -171,4 +171,5 @@ String currentSpeed() {
             return String(snakeSpeedOrig);
             break;
     }
+    return "50";
 }
