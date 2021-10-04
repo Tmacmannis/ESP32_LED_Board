@@ -24,6 +24,11 @@ boolean lightsOn = false;
 int currentState;
 int lastState;
 String animationName;
+int snakeSpeed = 100;
+int rainSpeed = 100;
+
+int snakeSpeedOrig;
+int rainSpeedOrig;
 
 cLEDMatrix<MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_TYPE> leds;
 
@@ -84,7 +89,7 @@ void ledStateMachine() {
     switch (currentState) {
         case 0:  //off
             EVERY_N_MILLISECONDS(20) {
-               FastLED.clear(true);
+                FastLED.clear(true);
             }
             break;
         case 1:  //Rainbow
@@ -94,6 +99,13 @@ void ledStateMachine() {
             showFireworks();
             break;
         case 3:
+            randomBlinks();
+            break;
+        case 4:
+            drawRain();
+            break;
+        case 5:
+            makeSnakes();
             break;
     }
 }
@@ -108,16 +120,55 @@ void setAnimation(String payload) {
     if (payload == "Random Blinks") {
         currentState = 3;
     }
-    if (payload == "Spectrum") {
+    if (payload == "Rain") {
         currentState = 4;
     }
-    if (payload == "Scrolling Spectrum") {
+    if (payload == "Snakes") {
         currentState = 5;
-    }
-    if (payload == "Custom Text") {
-        currentState = 6;
     }
     if (payload == "Random") {
         currentState = 7;
+    }
+}
+
+void assignSpeed(int speed) {
+    switch (currentState) {
+        case 1:  //Rainbow
+            // testAnimation();
+            break;
+        case 2:  //Fireworks
+            // showFireworks();
+            break;
+        case 3:
+            // randomBlinks();
+            break;
+        case 4:
+            rainSpeedOrig = speed;
+            rainSpeed = map(speed, 0, 100, 500, 20);
+            break;
+        case 5:
+            snakeSpeedOrig = speed;
+            snakeSpeed = map(speed, 0, 100, 500, 20);
+            break;
+    }
+}
+
+String currentSpeed() {
+    switch (currentState) {
+        case 1:  //Rainbow
+            // testAnimation();
+            break;
+        case 2:  //Fireworks
+            // showFireworks();
+            break;
+        case 3:
+            // randomBlinks();
+            break;
+        case 4:
+            return String(rainSpeedOrig);
+            break;
+        case 5:
+            return String(snakeSpeedOrig);
+            break;
     }
 }

@@ -6,14 +6,14 @@ void Task1code(void* pvParameters) {
         delay(28);
         client.loop();  // takes 60 micro seconds to complete, fast...
         unsigned long currentMillis = millis();
-        EVERY_N_MILLISECONDS(1000) {
-            TelnetStream.print("lightsOn: ");
-            TelnetStream.print(lightsOn);
-            TelnetStream.print(" brightness: ");
-            TelnetStream.print(brightness);
-            TelnetStream.print(" current state: ");
-            TelnetStream.println(currentState);
-        }
+        // EVERY_N_MILLISECONDS(1000) {
+        //     TelnetStream.print("lightsOn: ");
+        //     TelnetStream.print(lightsOn);
+        //     TelnetStream.print(" brightness: ");
+        //     TelnetStream.print(brightness);
+        //     TelnetStream.print(" current state: ");
+        //     TelnetStream.println(currentState);
+        // }
 
         EVERY_N_MILLISECONDS(500) {
             if (lightsOn) {
@@ -23,6 +23,7 @@ void Task1code(void* pvParameters) {
             }
             client.publish("ledboard/brightnessState", String(homeAssitantBrightness));
             client.publish("ledboard/effectState", animationName);
+            client.publish("ledboard/set_speed", currentSpeed());
         }
     }
 }
@@ -60,5 +61,11 @@ void onConnectionEstablished() {
         TelnetStream.println(payload);
         animationName = payload;
         setAnimation(animationName);
+    });
+
+    client.subscribe("ledboard/speed_slider", [](const String& payload) {
+        TelnetStream.print("Speed payload is: ");
+        TelnetStream.println(payload);
+        assignSpeed(payload.toInt());
     });
 }

@@ -50,3 +50,19 @@ void testAnimation() {
         counter = 0;
     FastLED.show();
 }
+
+uint8_t randomBlinkOffset = 0;
+void randomBlinks() {
+    EVERY_N_MILLISECONDS(30) {
+        fadeToBlackBy(matrixleds, NUMMATRIX, map(brightness, 3, 255, 1, 5));
+    }
+    EVERY_N_MILLISECONDS(50) {
+        int pos = random16(NUMMATRIX);
+        matrixleds[pos] += CHSV(randomBlinkOffset + random8(64), 200, brightness);
+        matrix->show();
+        handleClientTest();
+    }
+    EVERY_N_MILLISECONDS(100) {
+        randomBlinkOffset++;
+    }
+}
