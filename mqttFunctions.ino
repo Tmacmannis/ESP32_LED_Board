@@ -23,7 +23,7 @@ void Task1code(void* pvParameters) {
             }
             client.publish("ledboard/brightnessState", String(homeAssitantBrightness));
             client.publish("ledboard/effectState", animationName);
-            client.publish("ledboard/set_speed", currentSpeed());
+            client.publish("ledboard/set_speed", currentSpeed(currentState));
         }
     }
 }
@@ -66,6 +66,6 @@ void onConnectionEstablished() {
     client.subscribe("ledboard/speed_slider", [](const String& payload) {
         TelnetStream.print("Speed payload is: ");
         TelnetStream.println(payload);
-        assignSpeed(payload.toInt());
+        assignSpeed(payload.toInt(), currentState);
     });
 }

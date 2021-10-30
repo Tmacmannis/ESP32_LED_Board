@@ -22,7 +22,7 @@ void testAnimation() {
             h += 16;
         }
     }
-    hue += 4;
+    hue += rainbowSpeed;
 
     if (counter < 125)
         ;
