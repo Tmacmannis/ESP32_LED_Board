@@ -59,7 +59,7 @@ EspMQTTClient client(
 TaskHandle_t Task1;
 
 //Audio stuff ***************************
-#define SAMPLES 1024                                // Must be a power of 2
+#define SAMPLES 512                                // Must be a power of 2
 #define SAMPLING_FREQ 40000                         // Hz, must be 40000 or less due to ADC conversion time. Determines maximum frequency that can be analysed by the FFT Fmax=sampleF/2.
 #define AMPLITUDE 6000                              // Depending on your audio source level, you may need to alter this value. Can be used as a 'sensitivity' control.
 #define AUDIO_IN_PIN 35                             // Signal in on this pin
@@ -122,16 +122,17 @@ void setup() {
     setupOTA("LEDBoard", mySSID, myPASSWORD);
     TelnetStream.begin();
 
-    client.enableDebuggingMessages();                                           // Enable debugging messages sent to serial output
+    client.enableDebuggingMessages(false);                                           // Enable debugging messages sent to serial output
     client.enableHTTPWebUpdater();                                              // Enable the web updater. User and password default to values of MQTTUsername and MQTTPassword. These can be overrited with enableHTTPWebUpdater("user", "password").
     client.enableLastWillMessage("TestClient/lastwill", "I am going offline");  // You can activate the retain flag by setting the third parameter to true
-    client.enableDebuggingMessages(true);
 
     FastLED.addLeds<WS2812B, PIN, RGB>(matrixleds, NUMMATRIX);
     matrix->begin();
     matrix->setTextWrap(false);
     matrix->setBrightness(255);
     matrix->setTextColor(colors[0]);
+
+    sampling_period_us = round(1000000 * (1.0 / SAMPLING_FREQ));
 
     xTaskCreatePinnedToCore(
         Task1code, /* Task function. */

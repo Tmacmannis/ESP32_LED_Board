@@ -18,12 +18,12 @@ void Task1code(void* pvParameters) {
         EVERY_N_MILLISECONDS(500) {
             if (lightsOn) {
                 client.publish("ledboard/OnOffState", "ON");
+                client.publish("ledboard/set_speed", currentSpeed(currentState));
             } else {
                 client.publish("ledboard/OnOffState", "OFF");
             }
             client.publish("ledboard/brightnessState", String(homeAssitantBrightness));
             client.publish("ledboard/effectState", animationName);
-            client.publish("ledboard/set_speed", currentSpeed(currentState));
         }
     }
 }
