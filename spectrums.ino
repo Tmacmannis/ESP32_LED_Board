@@ -95,9 +95,9 @@ void runSpectrums() {
             case 4:
                 changingBars(band, barHeight);
                 break;
-            case 5:
-                waterfall(band);
-                break;
+            // case 5:
+            //     waterfall(band);
+            //     break;
         }
 
         // Draw peaks
@@ -117,9 +117,9 @@ void runSpectrums() {
             case 4:
                 // No peaks
                 break;
-            case 5:
-                // No peaks
-                break;
+            // case 5:
+            //     // No peaks
+            //     break;
         }
 
         // Save oldBarHeights for averaging later
@@ -140,9 +140,11 @@ void runSpectrums() {
         colorTimer++;
     }
 
-    EVERY_N_SECONDS(10) {
-        buttonPushCounter = (buttonPushCounter + 1) % 6;
+    EVERY_N_MILLISECONDS_I(timingObj, 10000) {
+        buttonPushCounter = (buttonPushCounter + 1) % 5;
+        timingObj.setPeriod(random(30000, 90000));
     }
+
 
     FastLED.show();
 }

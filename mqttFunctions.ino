@@ -68,4 +68,10 @@ void onConnectionEstablished() {
         TelnetStream.println(payload);
         assignSpeed(payload.toInt(), currentState);
     });
+
+    client.subscribe("python/mqtt", [](const String& payload) {
+        TelnetStream.print("Controller payload is: ");
+        TelnetStream.println(payload);
+        snakeDir=payload;
+    });
 }

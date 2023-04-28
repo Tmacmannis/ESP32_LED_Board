@@ -26,6 +26,7 @@ int currentState;
 int lastState;
 String animationName;
 int snakeSpeed = 100;
+String snakeDir;
 int rainSpeed = 100;
 int rainbowSpeed = 3;
 
@@ -177,13 +178,13 @@ void ledStateMachine(int showNum) {
             makeSnakes();
             break;
         case 6:
-            happyHalloweenText();
-            break;
-        case 7:
             runSpectrums();
             break;
-        case 8:
+        case 7:
             randomShow();
+            break;
+        case 8:
+            makeSnakesGame();
             break;
     }
 }
@@ -192,14 +193,12 @@ int randomShowNum;
 
 void randomShow() {
     EVERY_N_MILLISECONDS_I(timingObj, 10000) {
-        randomShowNum = random(1, 8);
+        randomShowNum = random(1, 7);
         timingObj.setPeriod(random(30000, 90000));
     }
 
     ledStateMachine(randomShowNum);
 }
-
-int pickRandomShow() {}
 
 void setAnimation(String payload) {
     if (payload == "Rainbow Effects") {
@@ -217,13 +216,13 @@ void setAnimation(String payload) {
     if (payload == "Snakes") {
         currentState = 5;
     }
-    if (payload == "Halloween") {
+    if (payload == "Spectrums") {
         currentState = 6;
     }
-    if (payload == "Spectrums") {
+    if (payload == "Random") {
         currentState = 7;
     }
-    if (payload == "Random") {
+    if (payload == "Snake Game") {
         currentState = 8;
     }
 }
